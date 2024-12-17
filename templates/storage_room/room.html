@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+
+{% block script %}
+<script>
+function sendJsonRpc(method, params, callback) {
+    const json = {
+        jsonrpc: '2.0',
+        method: method,
+        params: params,
+        id: Date.now() 
+    };
+
+    fetch('/json-rpc', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(json)
+    })
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(result) {
+        if (result.error) {
+            alert('Ошибка: ' + result.error.message);
+        } else {
+            callback(result.result);
+        }
+    })
+    .catch(function(error) {
+        alert('Ошибка: ' + error.message);
+    });
+}
+
+function getRoomList() {
+    sendJsonRpc('get_rooms', {}, function(data) {
+        const rooms = data.rooms;
+        const freeCount = data.free;
+        const occupiedCount = data.occupied;
+
+        document.getElementById('room-summary').innerHTML = `
+            Свободных ячеек: ${freeCount} <br> 
+            Занятых ячеек: ${occupiedCount}
+        `;
+
+        rooms.sort(function(a, b) {
+            return a.number - b.number;
+        });
+        const container = document.getElementById('room-grid');
+        container.innerHTML = ''; 
+        for (let i = 0; i < rooms.length; i++) {
+            const room = rooms[i];
+            const roomDiv = document.createElement('div');
+            roomDiv.className = 'room';
+            if (room.tenant) {
+                roomDiv.classList.add('occupied'); 
+            }
+            roomDiv.innerHTML = `
+                <div class="room-number">Ячейка ${room.number}</div>
+                <div class="room-status">${room.tenant || 'Свободна'}</div>
+            `;
+            if (!room.tenant) {
+                const bookingButton = document.createElement('button');
+                bookingButton.innerText = 'Зарезервировать';
+                bookingButton.onclick = function() {
+                    booking(room.number); 
+                };
+                roomDiv.appendChild(bookingButton);
+            } else {
+                const releaseButton = document.createElement('button');
+                releaseButton.innerText = 'Освободить';
+                releaseButton.onclick = function() {
+                    release(room.number); 
+                };
+                roomDiv.appendChild(releaseButton);
+            }
+            container.appendChild(roomDiv);
+        }
+    });
+}
+
+function booking(room_number) {
+    sendJsonRpc('booking', { room_number: room_number }, function() {
+        getRoomList(); 
+    });
+}
+
+
+function release(room_number) {
+    sendJsonRpc('release', { room_number: room_number }, function() {
+        getRoomList(); 
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    getRoomList();
+});
+</script>
+{% endblock %}
+
+{% block styles %}
+<style>
+    #room-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
+        gap: 20px;
+        justify-items: center;
+        align-items: start; 
+        padding: 20px;
+        margin-top: 20px;
+    }
+
+    #room-summary {
+        margin: 10px auto;
+        text-align: center;
+        font-size: 18px;
+        color: #333;
+    }
+
+    .room {
+        width: 150px;
+        height: 150px;
+        border: 1px solid #4a5568;
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        background-color: #f9fafb;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .room:hover {
+        background-color: #2d3748;
+        color: #ffffff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transform: translateY(-5px);
+    }
+
+    .room.occupied {
+        background-color: #718096;
+        color: #f9fafb;
+        border-color: #4a5568;
+    }
+
+    .room.occupied:hover {
+        background-color: #4a5568;
+    }
+
+    .room-number {
+        font-weight: bold;
+        font-size: 18px;
+        color: #2d3748;
+    }
+
+    .room-status {
+        font-size: 14px;
+        color: #718096;
+        transition: color 0.3s ease;
+    }
+
+    .room:hover .room-status {
+        color: #f9fafb;
+    }
+
+    button {
+        padding: 8px 12px;
+        background-color: #2d3748;
+        border: none;
+        color: #fff;
+        font-size: 14px;
+        font-weight: bold;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #4a5568;
+        color: #e2e8f0;
+    }
+
+    h1 {
+        text-align: center;
+        font-size: 28px;
+        color: #2d3748;
+        margin-top: 80px; 
+    }
+
+    @media (max-width: 768px) {
+        h1 {
+            font-size: 24px;
+        }
+        #room-grid {
+            gap: 15px;
+        }
+    }
+
+</style>
+{% endblock %}
+
+{% block main %}
+<h1>Камера хранения</h1>
+<div id="room-summary"></div>
+<div id="room-grid"></div>
+{% endblock %}

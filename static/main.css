@@ -1,0 +1,152 @@
+/* Основные стили для страницы */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f3f4f6, #e2e8f0);
+    color: #333;
+    padding-bottom: 60px;
+}
+
+main {
+    margin: 20px auto;
+    padding: 20px;
+    max-width: 1200px;
+    background: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    margin-top: 60px;
+}
+
+header {
+    padding: 15px 10px;
+    background: linear-gradient(90deg, #4a5568, #2d3748);
+    color: #fff;
+    font-size: 20px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    position:fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000; /* Хедер всегда сверху */
+}
+
+footer {
+    padding: 15px;
+    background: #2d3748;
+    color: #f7fafc;
+    text-align: center;
+    font-size: 14px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+/* Стили для ссылок */
+a {
+    color: #3182ce;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #2b6cb0;
+    text-decoration: underline;
+}
+
+/* Формы и кнопки */
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #2d3748;
+    font-weight: 600;
+}
+
+input {
+    padding: 10px;
+    border: 2px solid #cbd5e0;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+input:focus {
+    border-color: #3182ce;
+}
+
+button {
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background: #3182ce;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+button:hover {
+    background: #2b6cb0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Центрирование контента */
+.center-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Блоки с эффектами */
+.block {
+    display: inline-block;
+    padding: 20px 30px;
+    margin: 10px;
+    background: #edf2f7;
+    color: #2d3748;
+    font-weight: 600;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+a.block {
+    color: #2d3748;
+    text-decoration: none;
+}
+
+.block:hover {
+    background: #63b3ed;
+    color: #fff;
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Контейнер для блоков */
+.block-container {
+    text-align: center;
+    padding: 40px 0;
+}
+
+/* Стили для ошибок */
+.error {
+    color: #e53e3e;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Контейнер кнопок */
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
